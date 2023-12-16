@@ -62,7 +62,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
-                app:layout_constraintEnd_toStartOf="@+id/saveReadSpacer"
+                android:layout_marginEnd="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/initCard">
 
@@ -77,7 +78,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/save_header"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Title"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
@@ -85,7 +85,9 @@
                         android:id="@+id/saveText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:layout_constraintTop_toBottomOf="@id/saveHeader" />
+                        app:layout_constraintTop_toBottomOf="@id/saveHeader"
+                        android:inputType="text"
+                        android:importantForAutofill="no" />
 
                     <Button
                         android:id="@+id/saveButton"
@@ -99,34 +101,27 @@
                         android:id="@+id/saveTimestamp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        tools:text="time taken"
                         android:textAppearance="@style/TextAppearance.AppCompat.Caption"
                         android:textColor="@color/purple_500"
                         android:visibility="gone"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/saveButton"
+                        tools:text="time taken"
                         tools:visibility="visible" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>
 
-            <View
-                android:id="@+id/saveReadSpacer"
-                android:layout_width="8dp"
-                android:layout_height="0dp"
-                android:layout_marginTop="16dp"
-                app:layout_constraintEnd_toStartOf="@id/saveCard"
-                app:layout_constraintStart_toEndOf="@id/readCard"
-                app:layout_constraintTop_toBottomOf="@id/initCard" />
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/readCard"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/saveReadSpacer"
-                app:layout_constraintTop_toBottomOf="@+id/initCard">
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/saveCard">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
@@ -139,7 +134,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/read_header"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Title"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
@@ -148,7 +142,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:enabled="false"
-                        app:layout_constraintTop_toBottomOf="@id/readHeader" />
+                        app:layout_constraintTop_toBottomOf="@id/readHeader"
+                        android:importantForAutofill="no" />
 
                     <Button
                         android:id="@+id/readButton"
@@ -162,12 +157,12 @@
                         android:id="@+id/readTimestamp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        tools:text="@string/timestamp"
                         android:textAppearance="@style/TextAppearance.AppCompat.Caption"
                         android:textColor="@color/purple_500"
                         android:visibility="gone"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/readButton"
+                        tools:text="@string/timestamp"
                         tools:visibility="visible" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </androidx.cardview.widget.CardView>
@@ -181,7 +176,7 @@
                 android:text="@string/raw_file_content"
                 android:textAppearance="@style/TextAppearance.AppCompat.Title"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/saveCard" />
+                app:layout_constraintTop_toBottomOf="@id/readCard" />
 
             <TextView
                 android:id="@+id/fileText"

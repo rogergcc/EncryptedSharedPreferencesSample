@@ -4,6 +4,7 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import android.view.View
+import android.widget.Toast
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 import com.rogergcc.encryptedsharedpreferencessample.BaseApp.Companion.FILENAME_PREFERENCES
@@ -93,6 +94,13 @@ class MainActivity : AppCompatActivity() {
     private fun saveValue() {
         val startTs = System.currentTimeMillis()
 
+        if (binding.saveText.text.isNullOrBlank() ||
+            binding.tvNumberPreferences.text.isNullOrBlank() ||
+            binding.saveCheckBox.text.isNullOrBlank()) {
+            Toast.makeText(this, "Datos incompletos", Toast.LENGTH_SHORT).show()
+            return
+
+            }
         // Step 3: Save data to the EncryptedSharedPreferences as usual
         getSharedPreferencesBack().edit()
             .putString(keyToken, binding.saveText.text.toString())
@@ -127,11 +135,11 @@ class MainActivity : AppCompatActivity() {
         val startTs = System.currentTimeMillis()
 
         // Step 3: Read data from EncryptedSharedPreferences as usual
-        val value = readSharedPrefOrEncriptedSharedPref.getString(keyToken, "")
+        val valueKeytoken = readSharedPrefOrEncriptedSharedPref.getString(keyToken, "")
         val valueInt = readSharedPrefOrEncriptedSharedPref.getInt(keyNumber, 0)
         val valueBoolean = readSharedPrefOrEncriptedSharedPref.getBoolean(keyOnbard, false)
 
-        binding.readText.setText("$isDataSharedPref ? - $valueInt - $valueBoolean")
+        binding.readText.setText("$isDataSharedPref ? $valueKeytoken - $valueInt - $valueBoolean")
 
 
         val endTs = System.currentTimeMillis()

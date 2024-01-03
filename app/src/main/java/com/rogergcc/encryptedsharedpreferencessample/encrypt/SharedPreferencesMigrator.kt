@@ -19,7 +19,6 @@ class SharedPreferencesMigrator(
 
         // Obtener todos los valores temporalmente
         val allData = mutableMapOf<String, Any?>()
-
         allKeys.forEach { key ->
             allData[key] = getValueFromOldPreferences(key)
         }
@@ -27,7 +26,10 @@ class SharedPreferencesMigrator(
         // Limpiar preferencias antiguas
         oldSharedPreferences.edit().clear().apply()
 
-        migrateData(allKeys)
+        // Migrar datos al mismo archivo de preferencias
+        allData.forEach { (key, value) ->
+            migrateKey(key, value)
+        }
 
     }
 
@@ -39,19 +41,17 @@ class SharedPreferencesMigrator(
 
     }
 
-    private fun migrateKey(key: String) {
+    private fun migrateKey(key: String, value: Any?) {
         if (key != "__androidx_security_crypto_encrypted_prefs_key_keyset__" &&
             key != "__androidx_security_crypto_encrypted_prefs_value_keyset__"
         ) {
-            when (val value = getValueFromOldPreferences(key)) {
-
+            when (value) {
                 is String -> newSharedPreferences.edit().putString(key, value).apply()
                 is Int -> newSharedPreferences.edit().putInt(key, value).apply()
                 is Boolean -> newSharedPreferences.edit().putBoolean(key, value).apply()
                 is Long -> newSharedPreferences.edit().putLong(key, value).apply()
                 is Float -> newSharedPreferences.edit().putFloat(key, value).apply()
-                is Set<*> -> newSharedPreferences.edit().putStringSet(key, value as Set<String>)
-                    .apply()
+                is Set<*> -> newSharedPreferences.edit().putStringSet(key, value as Set<String>).apply()
             }
         }
     }

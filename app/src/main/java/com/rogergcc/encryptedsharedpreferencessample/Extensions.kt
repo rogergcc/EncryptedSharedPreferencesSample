@@ -1,6 +1,7 @@
 package com.rogergcc.encryptedsharedpreferencessample
 
 import android.app.Activity
+import android.content.SharedPreferences
 import android.os.Build
 import android.text.Html
 import android.text.Spanned
@@ -26,4 +27,10 @@ fun String.highlight(): Spanned {
 fun AppCompatActivity.hideKeyboard() {
     val imm = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
     imm.hideSoftInputFromWindow(findViewById<View>(android.R.id.content).windowToken, 0)
+}
+// Extensión para simplificar la edición de SharedPreferences
+private fun SharedPreferences.edit(action: SharedPreferences.Editor.() -> Unit) {
+    val editor = edit()
+    action(editor)
+    editor.apply()
 }

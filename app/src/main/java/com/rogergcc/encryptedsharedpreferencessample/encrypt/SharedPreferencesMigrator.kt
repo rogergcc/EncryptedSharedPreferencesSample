@@ -1,6 +1,7 @@
 package com.rogergcc.encryptedsharedpreferencessample.encrypt
 
 import android.content.SharedPreferences
+import androidx.core.content.edit
 
 
 /**
@@ -11,6 +12,11 @@ class SharedPreferencesMigrator(
     private val oldSharedPreferences: SharedPreferences,
     private val newSharedPreferences: SharedPreferences
 ) {
+    companion object {
+        private const val CRYPTO_KEYSET_KEY = "__androidx_security_crypto_encrypted_prefs_key_keyset__"
+        private const val CRYPTO_VALUE_KEYSET_KEY = "__androidx_security_crypto_encrypted_prefs_value_keyset__"
+    }
+
     fun migrateAllData() {
 //        val allKeys = oldSharedPreferences.all.keys.toList()
 //        migrateData(allKeys)
@@ -23,8 +29,8 @@ class SharedPreferencesMigrator(
             allData[key] = getValueFromOldPreferences(key)
         }
 
-        // Limpiar preferencias antiguas
-        oldSharedPreferences.edit().clear().apply()
+        // Limpiar preferencias antiguas, excluyendo las claves relacionadas con el cifrado
+        clearOldPreferencesExceptKeys(oldSharedPreferences, setOf(CRYPTO_KEYSET_KEY, CRYPTO_VALUE_KEYSET_KEY))
 
         // Migrar datos al mismo archivo de preferencias
         allData.forEach { (key, value) ->
@@ -33,18 +39,17 @@ class SharedPreferencesMigrator(
 
     }
 
-    private fun migrateData(keysToMigrate: List<String>) {
-        keysToMigrate.forEach { key ->
-            migrateKey(key)
-        }
-//        oldSharedPreferences.edit().clear().apply()
-
-    }
+//    private fun migrateData(keysToMigrate: List<String>) {
+//        keysToMigrate.forEach { key ->
+//            migrateKey(key)
+//        }
+////        oldSharedPreferences.edit().clear().apply()
+//
+//    }
 
     private fun migrateKey(key: String, value: Any?) {
-        if (key != "__androidx_security_crypto_encrypted_prefs_key_keyset__" &&
-            key != "__androidx_security_crypto_encrypted_prefs_value_keyset__"
-        ) {
+        // Excluir las claves relacionadas con el cifrado
+        if (!isCryptoKey(key)) {
             when (value) {
                 is String -> newSharedPreferences.edit().putString(key, value).apply()
                 is Int -> newSharedPreferences.edit().putInt(key, value).apply()
@@ -56,7 +61,25 @@ class SharedPreferencesMigrator(
         }
     }
 
+    private fun isCryptoKey(key: String): Boolean {
+        return key == CRYPTO_KEYSET_KEY || key == CRYPTO_VALUE_KEYSET_KEY
+    }
+
+    private fun clearOldPreferencesExceptKeys(
+        sharedPreferences: SharedPreferences,
+        keysToKeep: Set<String>
+    ) {
+        sharedPreferences.edit {
+            sharedPreferences.all.keys.filter { it !in keysToKeep }.forEach { key ->
+                remove(key)
+            }
+            apply()
+        }
+    }
+
     private fun getValueFromOldPreferences(key: String): Any? {
         return oldSharedPreferences.all[key]
     }
+
+
 }

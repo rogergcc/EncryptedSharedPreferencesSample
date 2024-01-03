@@ -20,6 +20,8 @@ class SharedPreferencesMigrator(
         keysToMigrate.forEach { key ->
             migrateKey(key)
         }
+        oldSharedPreferences.edit().clear().apply()
+
     }
 
     private fun migrateKey(key: String) {

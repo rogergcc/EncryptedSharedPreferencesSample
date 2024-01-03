@@ -27,7 +27,6 @@ class SharedPreferencesMigrator(
             is String -> newSharedPreferences.edit().putString(key, value).apply()
             is Int -> newSharedPreferences.edit().putInt(key, value).apply()
             is Long -> newSharedPreferences.edit().putLong(key, value).apply()
-            // ... Agrega más tipos según sea necesario
         }
     }
 

@@ -16,9 +16,11 @@ class BaseApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
-
-        SharedPreferencesManager.getInstance(this, Companion.FILENAME_PREFERENCES)
+        Log.d(TAG, "onCreate: oncCreate BaseApp init")
+        SharedPreferencesManager.getInstance(this, FILENAME_PREFERENCES)
+        Log.d(TAG, "onCreate: oncCreate BaseApp after SharedPreferencesManager")
         EncryptedSharedPreferencesManager.getInstance(this, FILENAME_PREFERENCES)
+        Log.d(TAG, "onCreate: oncCreate BaseApp after EncryptedSharedPreferencesManager")
 
 //        SharedPreferencesManager.getInstance(this, FILENAME_PREFERENCES_2)
 
@@ -34,14 +36,17 @@ class BaseApp : Application() {
     }
 
     private fun migrateSharedPreferences(oldFileName: String, newFileName: String) {
+        Log.d(TAG, "migrateSharedPreferences: init")
         if (sharedPreferencesExist(oldFileName)) {
-            Log.d(TAG, "migrateSharedPreferences: Migrando SharedPreferences")
+            Log.d(TAG, "migrateSharedPreferences: ANTERIORES")
             val oldPrefs = SharedPreferencesManager.getInstance(this, oldFileName).getSharedPreferences()
             val encryptedPrefs = EncryptedSharedPreferencesManager.getInstance(this,newFileName).getSharedPreferences()
 
 
             val migrator = SharedPreferencesMigrator(oldPrefs, encryptedPrefs)
             migrator.migrateAllData()
+        }else{
+            Log.d(TAG, "migrateSharedPreferences: No hay SharedPreferences ANTERIORES")
         }
     }
 

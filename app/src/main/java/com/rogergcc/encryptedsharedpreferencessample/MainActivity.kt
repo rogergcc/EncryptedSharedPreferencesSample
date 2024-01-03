@@ -7,7 +7,6 @@ import android.view.View
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 import com.rogergcc.encryptedsharedpreferencessample.BaseApp.Companion.FILENAME_PREFERENCES
-import com.rogergcc.encryptedsharedpreferencessample.BaseApp.Companion.FILENAME_PREFERENCES_encripted
 import com.rogergcc.encryptedsharedpreferencessample.databinding.ActivityMainBinding
 import com.rogergcc.encryptedsharedpreferencessample.encrypt.EncryptedSharedPreferencesManager
 import com.rogergcc.encryptedsharedpreferencessample.preferences.SharedPreferencesManager
@@ -121,7 +120,8 @@ class MainActivity : AppCompatActivity() {
             readSharedPrefOrEncriptedSharedPref= getSharedPreferencesBack()
         } else {
             isDataSharedPref = "EncryptedSharedPref"
-            readSharedPrefOrEncriptedSharedPref= EncryptedSharedPreferencesManager.getInstance(this, FILENAME_PREFERENCES_encripted).getSharedPreferences()
+            readSharedPrefOrEncriptedSharedPref= EncryptedSharedPreferencesManager.
+            getInstance(this, FILENAME_PREFERENCES).getSharedPreferences()
         }
 
         val startTs = System.currentTimeMillis()
@@ -150,7 +150,7 @@ class MainActivity : AppCompatActivity() {
             preferencesFile = File("${applicationInfo.dataDir}/shared_prefs/${FILENAME_PREFERENCES}.xml")
         } else {
             binding.fileHeader.text= "EncryptedSharedPref File"
-            preferencesFile = File("${applicationInfo.dataDir}/shared_prefs/${FILENAME_PREFERENCES_encripted}.xml")
+            preferencesFile = File("${applicationInfo.dataDir}/shared_prefs/${FILENAME_PREFERENCES}.xml")
         }
 
         if (preferencesFile.exists()) {

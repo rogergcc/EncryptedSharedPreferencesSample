@@ -23,13 +23,19 @@ class SharedPreferencesMigrator(
     }
 
     private fun migrateKey(key: String) {
-        when (val value = getValueFromOldPreferences(key)) {
-            is String -> newSharedPreferences.edit().putString(key, value).apply()
-            is Int -> newSharedPreferences.edit().putInt(key, value).apply()
-            is Boolean -> newSharedPreferences.edit().putBoolean(key, value).apply()
-            is Long -> newSharedPreferences.edit().putLong(key, value).apply()
-            is Float -> newSharedPreferences.edit().putFloat(key, value).apply()
-            is Set<*> -> newSharedPreferences.edit().putStringSet(key, value as Set<String>).apply()
+        if (key != "__androidx_security_crypto_encrypted_prefs_key_keyset__" &&
+            key != "__androidx_security_crypto_encrypted_prefs_value_keyset__"
+        ) {
+            when (val value = getValueFromOldPreferences(key)) {
+
+                is String -> newSharedPreferences.edit().putString(key, value).apply()
+                is Int -> newSharedPreferences.edit().putInt(key, value).apply()
+                is Boolean -> newSharedPreferences.edit().putBoolean(key, value).apply()
+                is Long -> newSharedPreferences.edit().putLong(key, value).apply()
+                is Float -> newSharedPreferences.edit().putFloat(key, value).apply()
+                is Set<*> -> newSharedPreferences.edit().putStringSet(key, value as Set<String>)
+                    .apply()
+            }
         }
     }
 

@@ -12,15 +12,30 @@ class SharedPreferencesMigrator(
     private val newSharedPreferences: SharedPreferences
 ) {
     fun migrateAllData() {
+//        val allKeys = oldSharedPreferences.all.keys.toList()
+//        migrateData(allKeys)
+
         val allKeys = oldSharedPreferences.all.keys.toList()
+
+        // Obtener todos los valores temporalmente
+        val allData = mutableMapOf<String, Any?>()
+
+        allKeys.forEach { key ->
+            allData[key] = getValueFromOldPreferences(key)
+        }
+
+        // Limpiar preferencias antiguas
+        oldSharedPreferences.edit().clear().apply()
+
         migrateData(allKeys)
+
     }
 
     private fun migrateData(keysToMigrate: List<String>) {
         keysToMigrate.forEach { key ->
             migrateKey(key)
         }
-        oldSharedPreferences.edit().clear().apply()
+//        oldSharedPreferences.edit().clear().apply()
 
     }
 

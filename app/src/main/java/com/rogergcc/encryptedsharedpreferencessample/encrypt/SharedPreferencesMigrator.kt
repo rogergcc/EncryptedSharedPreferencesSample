@@ -26,7 +26,10 @@ class SharedPreferencesMigrator(
         when (val value = getValueFromOldPreferences(key)) {
             is String -> newSharedPreferences.edit().putString(key, value).apply()
             is Int -> newSharedPreferences.edit().putInt(key, value).apply()
+            is Boolean -> newSharedPreferences.edit().putBoolean(key, value).apply()
             is Long -> newSharedPreferences.edit().putLong(key, value).apply()
+            is Float -> newSharedPreferences.edit().putFloat(key, value).apply()
+            is Set<*> -> newSharedPreferences.edit().putStringSet(key, value as Set<String>).apply()
         }
     }
 

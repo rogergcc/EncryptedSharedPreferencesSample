@@ -9,6 +9,7 @@ import androidx.security.crypto.MasterKey
 import com.rogergcc.encryptedsharedpreferencessample.BaseApp.Companion.FILENAME_PREFERENCES
 import com.rogergcc.encryptedsharedpreferencessample.BaseApp.Companion.FILENAME_PREFERENCES_encripted
 import com.rogergcc.encryptedsharedpreferencessample.databinding.ActivityMainBinding
+import com.rogergcc.encryptedsharedpreferencessample.encrypt.EncryptedSharedPreferencesManager
 import com.rogergcc.encryptedsharedpreferencessample.preferences.SharedPreferencesManager
 import java.io.File
 
@@ -114,10 +115,13 @@ class MainActivity : AppCompatActivity() {
     }
     private fun readValue() {
         var readSharedPrefOrEncriptedSharedPref: SharedPreferences? = null
-        if (binding.initEncrypted.isChecked) {
+        var isDataSharedPref: String = ""
+        if (binding.initEncrypted.isChecked.not()) {
+            isDataSharedPref = "SharedPref"
             readSharedPrefOrEncriptedSharedPref= getSharedPreferencesBack()
         } else {
-            readSharedPrefOrEncriptedSharedPref= SharedPreferencesManager.getInstance(this, FILENAME_PREFERENCES_encripted).getSharedPreferences()
+            isDataSharedPref = "EncryptedSharedPref"
+            readSharedPrefOrEncriptedSharedPref= EncryptedSharedPreferencesManager.getInstance(this, FILENAME_PREFERENCES_encripted).getSharedPreferences()
         }
 
         val startTs = System.currentTimeMillis()
@@ -127,7 +131,7 @@ class MainActivity : AppCompatActivity() {
         val valueInt = readSharedPrefOrEncriptedSharedPref.getInt(keyNumber, 0)
         val valueBoolean = readSharedPrefOrEncriptedSharedPref.getBoolean(keyOnbard, false)
 
-        binding.readText.setText(value + " - " + valueInt + " - " + valueBoolean)
+        binding.readText.setText("$isDataSharedPref ? - $valueInt - $valueBoolean")
 
 
         val endTs = System.currentTimeMillis()
@@ -139,7 +143,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showRawFile() {
-        val preferencesFile = File("${applicationInfo.dataDir}/shared_prefs/${FILENAME_PREFERENCES}.xml")
+        val preferencesFile: File
+        binding.fileHeader.text= "File ?"
+        if (binding.initEncrypted.isChecked.not()) {
+            binding.fileHeader.text= "SharedPref File"
+            preferencesFile = File("${applicationInfo.dataDir}/shared_prefs/${FILENAME_PREFERENCES}.xml")
+        } else {
+            binding.fileHeader.text= "EncryptedSharedPref File"
+            preferencesFile = File("${applicationInfo.dataDir}/shared_prefs/${FILENAME_PREFERENCES_encripted}.xml")
+        }
+
         if (preferencesFile.exists()) {
             binding.fileText.text = preferencesFile.readText().highlight()
         } else {

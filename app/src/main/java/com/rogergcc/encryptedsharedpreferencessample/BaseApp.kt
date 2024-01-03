@@ -17,12 +17,11 @@ class BaseApp : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        SharedPreferencesManager.getInstance(this, Companion.FILENAME_PREFERENCES)
-        EncryptedSharedPreferencesManager.getInstance(this, FILENAME_PREFERENCES)
-
+        SharedPreferencesManager.getInstance(this, FILENAME_PREFERENCES)
+//        EncryptedSharedPreferencesManager.getInstance(this, FILENAME_PREFERENCES)
 //        SharedPreferencesManager.getInstance(this, FILENAME_PREFERENCES_2)
+//        migrateSharedPreferences(FILENAME_PREFERENCES, FILENAME_PREFERENCES)
 
-        migrateSharedPreferences(FILENAME_PREFERENCES, FILENAME_PREFERENCES)
     }
 
     companion object {

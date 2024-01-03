@@ -26,7 +26,7 @@ class MainActivity : AppCompatActivity() {
 //        setSupportActionBar(binding.toolbar)
         readValue()
 
-        binding.initEncrypted.setOnCheckedChangeListener { _, checked -> initSharedPreferences(checked) }
+//        binding.initEncrypted.setOnCheckedChangeListener { _, checked -> initSharedPreferences(checked) }
         binding.saveButton.setOnClickListener { saveValue() }
         binding.readButton.setOnClickListener { readValue() }
 

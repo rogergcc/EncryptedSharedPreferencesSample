@@ -36,7 +36,7 @@ class BaseApp : Application() {
     private fun migrateSharedPreferences(oldFileName: String, newFileName: String) {
         if (sharedPreferencesExist(oldFileName)) {
             Log.d(TAG, "migrateSharedPreferences: Migrando SharedPreferences")
-            val oldPrefs = SharedPreferencesManager.getInstance(this, FILENAME_PREFERENCES).getSharedPreferences()
+            val oldPrefs = SharedPreferencesManager.getInstance(this, oldFileName).getSharedPreferences()
             val encryptedPrefs = EncryptedSharedPreferencesManager.getInstance(this,newFileName).getSharedPreferences()
 
 

@@ -24,7 +24,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
 //        setSupportActionBar(binding.toolbar)
-        showRawFile()
+        readValue()
+
         binding.initEncrypted.setOnCheckedChangeListener { _, checked -> initSharedPreferences(checked) }
         binding.saveButton.setOnClickListener { saveValue() }
         binding.readButton.setOnClickListener { readValue() }
@@ -97,7 +98,7 @@ class MainActivity : AppCompatActivity() {
             .commit() //note: I use `commit` in order to measure raw performance. Please use `apply` in your apps
 
         getSharedPreferencesBack().edit()
-            .putInt(keyOnbard, binding.tvNumberPreferences.text.toString().toInt() )
+            .putInt(keyNumber, binding.tvNumberPreferences.text.toString().toInt() )
             .commit()
         getSharedPreferencesBack().edit()
             .putBoolean(keyOnbard, binding.saveCheckBox.isChecked)

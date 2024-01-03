@@ -19,17 +19,18 @@ class BaseApp : Application() {
         Log.d(TAG, "onCreate: oncCreate BaseApp init")
         SharedPreferencesManager.getInstance(this, FILENAME_PREFERENCES)
         Log.d(TAG, "onCreate: oncCreate BaseApp after SharedPreferencesManager")
-        EncryptedSharedPreferencesManager.getInstance(this, FILENAME_PREFERENCES)
+        EncryptedSharedPreferencesManager.getInstance(this, FILENAME_PREFERENCES_encripted)
         Log.d(TAG, "onCreate: oncCreate BaseApp after EncryptedSharedPreferencesManager")
 
 //        SharedPreferencesManager.getInstance(this, FILENAME_PREFERENCES_2)
 
-        migrateSharedPreferences(FILENAME_PREFERENCES, FILENAME_PREFERENCES)
+        migrateSharedPreferences(FILENAME_PREFERENCES, FILENAME_PREFERENCES_encripted)
     }
 
     companion object {
          const val TAG = "BaseApp"
         const val FILENAME_PREFERENCES: String = "app_prefs"
+        const val FILENAME_PREFERENCES_encripted: String = "app_prefs_encripted"
 
         const val FILENAME_PREFERENCES_2: String = "Conf"
         const val FILENAME_PREFERENCES_3: String = "Conf_dev"

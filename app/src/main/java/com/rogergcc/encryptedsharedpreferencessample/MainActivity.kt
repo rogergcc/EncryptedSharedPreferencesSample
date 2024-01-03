@@ -7,6 +7,7 @@ import android.view.View
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 import com.rogergcc.encryptedsharedpreferencessample.BaseApp.Companion.FILENAME_PREFERENCES
+import com.rogergcc.encryptedsharedpreferencessample.BaseApp.Companion.FILENAME_PREFERENCES_encripted
 import com.rogergcc.encryptedsharedpreferencessample.databinding.ActivityMainBinding
 import com.rogergcc.encryptedsharedpreferencessample.preferences.SharedPreferencesManager
 import java.io.File
@@ -30,7 +31,7 @@ class MainActivity : AppCompatActivity() {
         binding.saveButton.setOnClickListener { saveValue() }
         binding.readButton.setOnClickListener { readValue() }
 
-        binding.initEncrypted.isChecked = true
+        binding.initEncrypted.isChecked = false
     }
 
     private fun initSharedPreferences(checked: Boolean) {
@@ -112,12 +113,19 @@ class MainActivity : AppCompatActivity() {
         showRawFile()
     }
     private fun readValue() {
+        var readSharedPrefOrEncriptedSharedPref: SharedPreferences? = null
+        if (binding.initEncrypted.isChecked) {
+            readSharedPrefOrEncriptedSharedPref= getSharedPreferencesBack()
+        } else {
+            readSharedPrefOrEncriptedSharedPref= SharedPreferencesManager.getInstance(this, FILENAME_PREFERENCES_encripted).getSharedPreferences()
+        }
+
         val startTs = System.currentTimeMillis()
 
         // Step 3: Read data from EncryptedSharedPreferences as usual
-        val value = getSharedPreferencesBack().getString(keyToken, "")
-        val valueInt = getSharedPreferencesBack().getInt(keyNumber, 0)
-        val valueBoolean = getSharedPreferencesBack().getBoolean(keyOnbard, false)
+        val value = readSharedPrefOrEncriptedSharedPref.getString(keyToken, "")
+        val valueInt = readSharedPrefOrEncriptedSharedPref.getInt(keyNumber, 0)
+        val valueBoolean = readSharedPrefOrEncriptedSharedPref.getBoolean(keyOnbard, false)
 
         binding.readText.setText(value + " - " + valueInt + " - " + valueBoolean)
 

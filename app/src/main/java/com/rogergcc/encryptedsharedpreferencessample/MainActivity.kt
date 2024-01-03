@@ -1,13 +1,14 @@
 package com.rogergcc.encryptedsharedpreferencessample
 
-import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import android.view.View
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
+import com.rogergcc.encryptedsharedpreferencessample.BaseApp.Companion.FILENAME_PREFERENCES
 import com.rogergcc.encryptedsharedpreferencessample.databinding.ActivityMainBinding
+import com.rogergcc.encryptedsharedpreferencessample.preferences.SharedPreferencesManager
 import java.io.File
 
 class MainActivity : AppCompatActivity() {
@@ -23,7 +24,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
 //        setSupportActionBar(binding.toolbar)
-
+        showRawFile()
         binding.initEncrypted.setOnCheckedChangeListener { _, checked -> initSharedPreferences(checked) }
         binding.saveButton.setOnClickListener { saveValue() }
         binding.readButton.setOnClickListener { readValue() }
@@ -44,7 +45,7 @@ class MainActivity : AppCompatActivity() {
         showRawFile()
     }
     private fun resetSharedPreferences() {
-        getSharedPreferences(FILENAME, MODE_PRIVATE)
+        getSharedPreferences(FILENAME_PREFERENCES, MODE_PRIVATE)
             .edit()
             .clear()
             .commit() //note: I use `commit` in order to measure raw performance. Please use `apply` in your apps
@@ -54,34 +55,12 @@ class MainActivity : AppCompatActivity() {
         val startTs = System.currentTimeMillis()
 
 
-//         val spec = KeyGenParameterSpec.Builder(
-//            MasterKey.DEFAULT_MASTER_KEY_ALIAS,
-//            KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT
-//        ).apply {
-//            setBlockModes(KeyProperties.BLOCK_MODE_GCM)
-//            setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)
-//            setKeySize(MasterKey.DEFAULT_AES_GCM_MASTER_KEY_SIZE)
-//        }.build()
-//
-//        // Step 1: Create or retrieve the Master Key for encryption/decryption
-//         val masterKey = MasterKey.Builder(applicationContext).apply {
-//            setKeyGenParameterSpec(spec)
-//        }.build()
-//
-//        sharedPreferences =  EncryptedSharedPreferences.create(
-//            applicationContext,
-//            preferencesName,
-//            masterKey,
-//            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-//            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-//        )
-//        sharedPreferences = getSecretSharedPref(applicationContext)
         val masterKey = MasterKey.Builder(applicationContext)
             .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
             .build()
         sharedPreferences = EncryptedSharedPreferences.create(
             applicationContext,
-            FILENAME,
+            FILENAME_PREFERENCES,
             masterKey,
             EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
             EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
@@ -89,39 +68,40 @@ class MainActivity : AppCompatActivity() {
         val endTs = System.currentTimeMillis()
         binding.initTimestamp.visibility = View.VISIBLE
         binding.initTimestamp.text = getString(R.string.timestamp).format(endTs - startTs)
+
+//        PreferenceManager.getInstance(this )?.migrateToEncryptedSharedPreferences(this)
+
+
     }
 
-
-    private fun getSecretSharedPref(context: Context): SharedPreferences {
-        val masterKey = MasterKey.Builder(context)
-            .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
-            .build()
-
-        return EncryptedSharedPreferences.create(context,
-            FILENAME,
-            masterKey,
-            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
-        )
-    }
 
     private fun initCleartextSharedPreferences() {
         val startTs = System.currentTimeMillis()
 
-        sharedPreferences = getSharedPreferences(FILENAME, MODE_PRIVATE)
+        sharedPreferences = getSharedPreferencesBack()
 
         val endTs = System.currentTimeMillis()
         binding.initTimestamp.visibility = View.VISIBLE
         binding.initTimestamp.text = getString(R.string.timestamp).format(endTs - startTs)
     }
+
+    private fun getSharedPreferencesBack() =
+        SharedPreferencesManager.getInstance(this, FILENAME_PREFERENCES).getSharedPreferences()
 
     private fun saveValue() {
         val startTs = System.currentTimeMillis()
 
         // Step 3: Save data to the EncryptedSharedPreferences as usual
-        sharedPreferences.edit()
-            .putString(KEYVALUE, binding.saveText.text.toString())
+        getSharedPreferencesBack().edit()
+            .putString(keyToken, binding.saveText.text.toString())
             .commit() //note: I use `commit` in order to measure raw performance. Please use `apply` in your apps
+
+        getSharedPreferencesBack().edit()
+            .putInt(keyOnbard, binding.tvNumberPreferences.text.toString().toInt() )
+            .commit()
+        getSharedPreferencesBack().edit()
+            .putBoolean(keyOnbard, binding.saveCheckBox.isChecked)
+            .commit()
 
         val endTs = System.currentTimeMillis()
         binding.saveTimestamp.visibility = View.VISIBLE
@@ -134,8 +114,12 @@ class MainActivity : AppCompatActivity() {
         val startTs = System.currentTimeMillis()
 
         // Step 3: Read data from EncryptedSharedPreferences as usual
-        val value = sharedPreferences.getString(KEYVALUE, "")
-        binding.readText.setText(value)
+        val value = getSharedPreferencesBack().getString(keyToken, "")
+        val valueInt = getSharedPreferencesBack().getInt(keyNumber, 0)
+        val valueBoolean = getSharedPreferencesBack().getBoolean(keyOnbard, false)
+
+        binding.readText.setText(value + " - " + valueInt + " - " + valueBoolean)
+
 
         val endTs = System.currentTimeMillis()
         binding.readTimestamp.visibility = View.VISIBLE
@@ -146,7 +130,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showRawFile() {
-        val preferencesFile = File("${applicationInfo.dataDir}/shared_prefs/${Companion.FILENAME}.xml")
+        val preferencesFile = File("${applicationInfo.dataDir}/shared_prefs/${FILENAME_PREFERENCES}.xml")
         if (preferencesFile.exists()) {
             binding.fileText.text = preferencesFile.readText().highlight()
         } else {
@@ -155,8 +139,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     companion object {
-        private const val FILENAME = "shared_preferences_encrypted"
-        private const val KEYVALUE: String = "KEY_VALUE"
+//        private const val FILENAME_PREFERENCES = "shared_preferences_app"
+        private const val FILENAME_PREFERENCES2 = "Conf"
+        private const val FILENAME_PREFERENCES3 = "Conf_dev"
+        private const val keyToken: String = "FCM_TOKEN"
+        private const val keyNumber: String = "KEY_VALUE_BOOLEAN"
+        private const val keyOnbard: String = "KEY_VALUE_INT"
+        private const val KEYVALUE_LONG: String = "KEY_VALUE_LONG"
+        private const val KEYVALUE_FLOAT: String = "KEY_VALUE_FLOAT"
+
+
     }
 
 }

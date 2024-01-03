@@ -81,21 +81,36 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
-                    <EditText
+                    <androidx.appcompat.widget.AppCompatEditText
                         android:id="@+id/saveText"
+
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         app:layout_constraintTop_toBottomOf="@id/saveHeader"
                         android:inputType="text"
                         android:importantForAutofill="no" />
-
+                    <androidx.appcompat.widget.AppCompatEditText
+                        android:id="@+id/tvNumberPreferences"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintTop_toBottomOf="@id/saveText"
+                        android:inputType="number"
+                        android:importantForAutofill="no" />
+                    <androidx.appcompat.widget.AppCompatCheckBox
+                        android:id="@+id/saveCheckBox"
+                        android:layout_width="match_parent"
+                        android:text="Number Saved?"
+                        android:checked="false"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintTop_toBottomOf="@id/tvNumberPreferences"
+                        />
                     <Button
                         android:id="@+id/saveButton"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/save"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/saveText" />
+                        app:layout_constraintTop_toBottomOf="@id/saveCheckBox" />
 
                     <TextView
                         android:id="@+id/saveTimestamp"

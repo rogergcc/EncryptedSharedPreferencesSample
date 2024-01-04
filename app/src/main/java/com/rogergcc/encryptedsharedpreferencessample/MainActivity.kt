@@ -4,6 +4,7 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import android.view.View
+import android.widget.Toast
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 import com.rogergcc.encryptedsharedpreferencessample.BaseApp.Companion.FILENAME_PREFERENCES
@@ -92,6 +93,13 @@ class MainActivity : AppCompatActivity() {
     private fun saveValue() {
         val startTs = System.currentTimeMillis()
 
+        if (binding.saveText.text.isNullOrBlank() ||
+            binding.tvNumberPreferences.text.isNullOrBlank() ||
+            binding.saveCheckBox.text.isNullOrBlank()) {
+            Toast.makeText(this, "Datos incompletos", Toast.LENGTH_SHORT).show()
+            return
+
+            }
         // Step 3: Save data to the EncryptedSharedPreferences as usual
         getSharedPreferencesBack().edit()
             .putString(keyToken, binding.saveText.text.toString())
@@ -115,7 +123,7 @@ class MainActivity : AppCompatActivity() {
         val startTs = System.currentTimeMillis()
 
         // Step 3: Read data from EncryptedSharedPreferences as usual
-        val value = getSharedPreferencesBack().getString(keyToken, "")
+        val value = getSharedPreferencesBack().getString(keyToken, "Nothing")
         val valueInt = getSharedPreferencesBack().getInt(keyNumber, 0)
         val valueBoolean = getSharedPreferencesBack().getBoolean(keyOnbard, false)
 
@@ -144,8 +152,8 @@ class MainActivity : AppCompatActivity() {
         private const val FILENAME_PREFERENCES2 = "Conf"
         private const val FILENAME_PREFERENCES3 = "Conf_dev"
         private const val keyToken: String = "FCM_TOKEN"
-        private const val keyNumber: String = "KEY_VALUE_BOOLEAN"
-        private const val keyOnbard: String = "KEY_VALUE_INT"
+        private const val keyNumber: String = "KEY_VALUE_INT"
+        private const val keyOnbard: String = "KEY_VALUE_BOOLEAN"
         private const val KEYVALUE_LONG: String = "KEY_VALUE_LONG"
         private const val KEYVALUE_FLOAT: String = "KEY_VALUE_FLOAT"
 
